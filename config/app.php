@@ -175,6 +175,9 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        // Intervention Image導入の為追加
+        Intervention\Image\ImageServiceProvider::class,
+
     ],
 
     /*
@@ -227,6 +230,8 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
 
+        // Intervention Image導入の為追加
+        'Image' => Intervention\Image\Facades\Image::class,
     ],
 
 ];

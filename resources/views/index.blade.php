@@ -43,7 +43,11 @@
       <li><img src="{{asset('storage/' . $post->image)}}" alt="投稿画像" width="200px"></li>
       <li>{{$post->title}}</li>
       <li>{{$post->content}}</li>
-      <li><button class="btn btn-info">Edit</button></li>
+      <li>
+        <a href="{{route('post.edit', ['id'=>$post->id])}}">
+          <button class="btn btn-info">Edit</button>
+        </a>
+      </li>
       @endforeach
     </ul>
   </div>
