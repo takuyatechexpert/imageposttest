@@ -42,7 +42,6 @@ class PostController extends Controller
         $post = new Post;
         $filename = $request->file->store('public');
 
-
         $post->image = basename($filename);
         $post->title = $request->input('title');
         $post->content = $request->input('content');
@@ -68,9 +67,11 @@ class PostController extends Controller
      * @param  \App\Models\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function edit(Post $post)
+    public function edit($id)
     {
         //
+        $post = Post::find($id);
+        return view('edit', compact('post'));
     }
 
     /**
@@ -80,9 +81,19 @@ class PostController extends Controller
      * @param  \App\Models\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Post $post)
+    public function update(PostRequest $request, $id)
     {
         //
+        $post = Post::find($id);
+        $filename = $request->file->store('public');
+
+        $post->image = basename($filename);
+        $post->title = $request->input('title');
+        $post->content = $request->input('content');
+        $post->update();
+
+        return redirect()->route('post.index')->with('success', '更新が完了しました');
+
     }
 
     /**
