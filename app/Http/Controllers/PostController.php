@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers;
 
+// Intervention Imageを使う為に2つ追加した
+use Intervention\Image\Facades\Image;
+use Illuminate\Support\Facades\Storage;
+
 use App\Models\Post;
 use Illuminate\Http\Request;
 use App\Http\Requests\PostRequest;
@@ -40,9 +44,35 @@ class PostController extends Controller
     {
         //
         $post = new Post;
-        $filename = $request->file->store('public');
+        $filename = $request->file('file');
+        // $image = $filename->store('public')
 
-        $post->image = basename($filename);
+        // パターン1
+        // $filename = $request->file('file');
+        // $name = basename($filename . '.jpeg');
+            // basename()はpath情報をカットしてファイル名だけにしてくれるイメージ
+        // Image::make($filename)->resize(300, 300)->save( public_path('/images/' . $name ) );
+            // public_pathはpublicディレクトリに保存する本当はstorageディレクトリに保存したい
+            // データベースにはファイル名を入れる
+        // $post->image = $name;
+
+        // パターン2
+        // よく分からないがこれでresizeできるresize(横, 縦)
+        // Image::makeは画像をキャッチできる
+        $image = Image::make($filename)
+        ->resize(300, null, function ($constraint) {
+        $constraint->aspectRatio();
+        });
+        // ファイル名の設定
+        $name = $image->basename . '.jpeg';
+
+        // storage::dixkについて公式ドキュメントを見ると初期はlocalでpathはstorage/app
+        // シンボルリンクを貼って保存したい場所はstorage/app/publicに保存したい
+        // その為に 'public' を指定する事した
+        // $image->encode()で画像情報を取得できた
+        Storage::disk('public')->put($name, $image->encode());
+
+        $post->image = $name;
         $post->title = $request->input('title');
         $post->content = $request->input('content');
         $post->save();
