@@ -42,25 +42,26 @@ class PostController extends Controller
      */
     public function store(PostRequest $request)
     {
+        ini_set('memory_limit', '256M');
         //
         $post = new Post;
         $filename = $request->file('file');
         // $image = $filename->store('public')
-
+        
         // パターン1
         // $filename = $request->file('file');
         // $name = basename($filename . '.jpeg');
-            // basename()はpath情報をカットしてファイル名だけにしてくれるイメージ
+        // basename()はpath情報をカットしてファイル名だけにしてくれるイメージ
         // Image::make($filename)->resize(300, 300)->save( public_path('/images/' . $name ) );
-            // public_pathはpublicディレクトリに保存する本当はstorageディレクトリに保存したい
-            // データベースにはファイル名を入れる
+        // public_pathはpublicディレクトリに保存する本当はstorageディレクトリに保存したい
+        // データベースにはファイル名を入れる
         // $post->image = $name;
-
+        
         // パターン2
         // よく分からないがこれでresizeできるresize(横, 縦)
         // Image::makeは画像をキャッチできる
         $image = Image::make($filename)
-        ->resize(300, null, function ($constraint) {
+        ->resize(1000, null, function ($constraint) {
         $constraint->aspectRatio();
         });
         // ファイル名の設定
